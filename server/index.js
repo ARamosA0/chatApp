@@ -11,7 +11,6 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", userRoutes);
 
-
 // connect to mongodb
 const connectionParams={
     useNewUrlParser: true,

@@ -20,8 +20,32 @@ module.exports.register = async (req, res, next) => {
         }
         const hashedPassword = await brcypt.hash(password, 10);
         const user = await User.create({
-            email, username, password: hashedPassword
+            email, username, password:hashedPassword
         });
+        delete user.password;
+        return res.json({status: true, user});
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports.login = async (req, res, next) => {
+    try {
+        const {username,password} = req.body;
+        const user = await User.findOne({ username});
+        if(!user){
+            return res.json({
+                message: "Incorrect username or password",
+                status: false
+            });
+        }
+        const passwordCheck = await brcypt.compare(password, user.password);
+        if(!passwordCheck){
+            return res.json({
+                message: "Incorrect username or password",
+                status: false
+            });
+        }
         delete user.password;
         return res.json({status: true, user});
     } catch (error) {
